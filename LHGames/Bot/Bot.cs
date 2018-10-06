@@ -88,6 +88,14 @@ namespace LHGames.Bot
 
             //fin des upgrades
 
+
+            if(PlayerInfo.Position.Y == 0)
+            {
+                Console.WriteLine("Stuck at y 0, going up");
+                return AIHelper.CreateMoveAction(new Point(0, -1));
+            }
+
+
             //update map of the world
             worldMap.UpdateMap(map.GetVisibleTiles());
             //worldMap.UpdateOtherPLayerMap(gameInfo.OtherPlayers);
@@ -229,6 +237,12 @@ public class MiningStrategy : Strategy
 
         // Trouver le filon le plus proche
         Point closestMineralPosition = GetClosestMineralPosition(player, map);
+
+        if(closestMineralPosition.Y < 12)
+        {
+            Move moveTowardsHome = new Move(player, map, player.HouseLocation);
+            return moveTowardsHome.NextAction(map, player);
+        }
 
         // Si le filon le plus proche renvoit la maison, ca veut dire quon ne truove rien proche de nous. Nous allons donc aller explorer.
         //if (closestMineralPosition.X == player.HouseLocation.X && closestMineralPosition.Y == player.HouseLocation.Y)

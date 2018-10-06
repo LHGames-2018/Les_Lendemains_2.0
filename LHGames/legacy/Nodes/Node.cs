@@ -131,8 +131,21 @@ namespace LHGames.Nodes
         {
             get
             {
+                int max_x = 0;
+                int max_y = 0;
+                bool online = GameController.playerBot.PlayerInfo.Name != "Player 1";
+                if (!online)
+                {
+                    max_x = 66;
+                    max_y = 66;
+                }
+                else
+                {
+                    max_x = 132;
+                    max_y = 198;
+                }
                 List<Node> childs = new List<Node>();
-                if (Point.X + 1 < GameController.playerBot.worldMap.tileTypeMap.GetLength(0))
+                if (Point.X + 1 < max_x)
                 {
                     var type = GameController.playerBot.worldMap.tileTypeMap[Point.X + 1, Point.Y];
                     if (filterType(type))
@@ -156,7 +169,7 @@ namespace LHGames.Nodes
                         childs.Add(create(goalNode, new Point(Point.X, Point.Y - 1), this, type));
                     }
                 }
-                if (Point.Y + 1 < GameController.playerBot.worldMap.tileTypeMap.GetLength(1))
+                if (Point.Y + 1 < max_y)
                 {
                     var type = GameController.playerBot.worldMap.tileTypeMap[Point.X, Point.Y + 1];
                     if (filterType(type))

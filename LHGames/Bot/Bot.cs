@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using LHGames;
 using LHGames.Actions;
 using LHGames.Helper;
@@ -333,11 +334,31 @@ public class QuickAttackStrategy : Strategy
 }
 
 
-public class upgradeStrategy : Strategy
+public class ImminentAttackStrategy : Strategy
 {
+    public IPlayer ennemy { get; set; }
+
+    // Le principe de ce mode de combat: quand un adversaire est proche de nous, on buffer une attaque dans une case proche de nous
+    // Cette attaque va etre delayee. Lidee est de smack le joueur adverse immediatement apres son deplacement, en anticipant son deplacement.
     public override string GetNextMove(IPlayer player, IEnumerable<IPlayer> visiblePlayers, LegacyMap map)
     {
-        throw new NotImplementedException();
+        Console.WriteLine("ON A ACTUALLY FAIT UNE FRAPPE PREVENTIVE");
+        int xDelta = ennemy.Position.X - player.Position.X;
+        int yDelta = ennemy.Position.Y - player.Position.Y;
+
+        if (xDelta == 2) xDelta = 1;
+        else if (xDelta == -2) xDelta = -1;
+        else if (yDelta == 2) yDelta = 1;
+        else if (yDelta == -2) yDelta = -1;
+        else if (xDelta == -1 && yDelta == -1) xDelta = 0;
+        else if (xDelta == 1 && yDelta == -1) yDelta = 0;
+        else if (xDelta == -1 && yDelta == 1) xDelta = 0;
+        else if (xDelta == 1 && yDelta == 1) yDelta = 0;
+
+        Point direction = new Point(xDelta, yDelta);
+        // On delait un peu pour etre sur que lautre joueur a bouge avant quon frappe.
+        Thread.Sleep(900);
+        return AIHelper.CreateMeleeAttackAction(direction);
     }
 }
 
@@ -380,14 +401,20 @@ public static class StrategyManager
         bool isFighting = false;
         if (visiblePlayers.Count() > 0)
         {
-            int acceptableDistance = 1;
+            int immediateFightDistance = 1;
+            int imminentFightDistance = 2;
             foreach (var visiblePlayer in visiblePlayers)
             {
-                if (Point.DistanceManhatan(visiblePlayer.Position, player.Position) <= acceptableDistance)
+                if (Point.DistanceManhatan(visiblePlayer.Position, player.Position) <= immediateFightDistance)
                 {
-                   
                     currentStrategy = new QuickAttackStrategy();
                     (currentStrategy as QuickAttackStrategy).ennemy = visiblePlayer;
+                    isFighting = true;
+                }
+                else if (Point.DistanceManhatan(visiblePlayer.Position, player.Position) == imminentFightDistance)
+                {
+                    currentStrategy = new ImminentAttackStrategy();
+                    (currentStrategy as ImminentAttackStrategy).ennemy = visiblePlayer;
                     isFighting = true;
                 }
             }

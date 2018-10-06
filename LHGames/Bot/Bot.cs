@@ -78,7 +78,15 @@ namespace LHGames.Bot
                 Console.WriteLine("Buying a Attack");
                 return AIHelper.CreateUpgradeAction(UpgradeType.AttackPower);
             }
+            if (PlayerInfo.Position == PlayerInfo.HouseLocation &&
+                PlayerInfo.TotalResources >= 10000 &&
+                PlayerInfo.Defence == 1)
+            {
+                Console.WriteLine("Buying a Defence");
+                return AIHelper.CreateUpgradeAction(UpgradeType.Defence);
+            }
 
+            //fin des upgrades
 
             //update map of the world
             worldMap.UpdateMap(map.GetVisibleTiles());

@@ -153,18 +153,24 @@ public class Strategy
         return "";
     }
 
-    public Point GetFreeAdjacentPosition(Point position, LegacyMap map)
+    public Point GetClosestFreeAdjacentPosition(IPlayer player, Point position, LegacyMap map)
     {
-        Point adjacentPoint;
+        List<Point> freeAdjacentPositions = GetFreeAdjacentPositions(position, map);
+        return freeAdjacentPositions.OrderByDescending(p => Point.DistanceManhatan(p, player.Position)).LastOrDefault();
+    }
+
+    public List<Point> GetFreeAdjacentPositions(Point position, LegacyMap map)
+    {
+        List<Point> adjacentPositions = new List<Point>();
         if (map.tileTypeMap[position.X+1, position.Y] == TileContent.Empty)
-            return new Point(position.X + 1, position.Y);
-        else if (map.tileTypeMap[position.X - 1, position.Y] == TileContent.Empty)
-            return new Point(position.X - 1, position.Y);
-        else if (map.tileTypeMap[position.X, position.Y + 1] == TileContent.Empty)
-            return new Point(position.X, position.Y + 1);
-        else if (map.tileTypeMap[position.X, position.Y - 1] == TileContent.Empty)
-            return new Point(position.X, position.Y - 1);
-        return null;
+            adjacentPositions.Add(new Point(position.X + 1, position.Y));
+        if (map.tileTypeMap[position.X - 1, position.Y] == TileContent.Empty)
+            adjacentPositions.Add(new Point(position.X - 1, position.Y));
+        if (map.tileTypeMap[position.X, position.Y + 1] == TileContent.Empty)
+            adjacentPositions.Add(new Point(position.X, position.Y + 1));
+        if (map.tileTypeMap[position.X, position.Y - 1] == TileContent.Empty)
+            adjacentPositions.Add(new Point(position.X, position.Y - 1));
+        return adjacentPositions;
     }
 
 }
@@ -188,7 +194,7 @@ public class MiningStrategy : Strategy
 
         // Trouver le filon le plus proche
         Point closestMineralPosition = GetClosestMineralPosition(player, map);
-        Point closestMineralAdjacentPosition = GetFreeAdjacentPosition(closestMineralPosition, map);
+        Point closestMineralAdjacentPosition = GetClosestFreeAdjacentPosition(player, closestMineralPosition, map);
 
         // Si on est colles au filon, le miner
         if (Point.DistanceManhatan(closestMineralPosition, player.Position) <= 1)

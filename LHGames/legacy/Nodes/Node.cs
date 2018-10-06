@@ -169,7 +169,7 @@ namespace LHGames.Nodes
                         childs.Add(create(goalNode, new Point(Point.X, Point.Y - 1), this, type));
                     }
                 }
-                if (Point.Y + 1 < max_y)
+                if (Point.Y + 1 < GameController.playerBot.worldMap.tileTypeMap.GetLength(1))
                 {
                     var type = GameController.playerBot.worldMap.tileTypeMap[Point.X, Point.Y + 1];
                     if (filterType(type))

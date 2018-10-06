@@ -11,6 +11,36 @@ namespace LHGames.Bot
 {
     internal class Bot
     {
+        public int x_max
+        {
+            get
+            {
+                bool online = GameController.playerBot.PlayerInfo.Name != "Player 1";
+                if (!online)
+                {
+                    return 66;
+                }
+                else
+                {
+                    return 132;
+                }
+            }
+        }
+        public int y_max
+        {
+            get
+            {
+                bool online = GameController.playerBot.PlayerInfo.Name != "Player 1";
+                if (!online)
+                {
+                    return 66;
+                }
+                else
+                {
+                    return 198;
+                }
+            }
+        }
         //legacy variable
         //static Strategy strategy = new Strategy();
         //static HighAction currentAction = null;
@@ -86,11 +116,32 @@ namespace LHGames.Bot
                 Console.WriteLine("Buying a Defence");
                 return AIHelper.CreateUpgradeAction(UpgradeType.Defence);
             }
+            if (PlayerInfo.Position == PlayerInfo.HouseLocation &&
+                PlayerInfo.TotalResources >= 15000 &&
+                PlayerInfo.AttackPower == 2)
+            {
+                Console.WriteLine("Buying a Attack");
+                return AIHelper.CreateUpgradeAction(UpgradeType.AttackPower);
+            }
+            if (PlayerInfo.Position == PlayerInfo.HouseLocation &&
+                PlayerInfo.TotalResources >= 15000 &&
+                PlayerInfo.Defence == 2)
+            {
+                Console.WriteLine("Buying a Defence");
+                return AIHelper.CreateUpgradeAction(UpgradeType.Defence);
+            }
+            if (PlayerInfo.Position == PlayerInfo.HouseLocation &&
+                PlayerInfo.TotalResources >= 25000 &&
+                PlayerInfo.AttackPower == 4)
+            {
+                Console.WriteLine("Buying a Attack");
+                return AIHelper.CreateUpgradeAction(UpgradeType.AttackPower);
+            }
 
             //fin des upgrades
 
 
-            if(PlayerInfo.Position.Y == 0)
+            if (PlayerInfo.Position.Y == 0)
             {
                 Console.WriteLine("Stuck at y 0, going up");
                 return AIHelper.CreateMoveAction(new Point(0, -1));
@@ -211,13 +262,13 @@ public class Strategy
     public List<Point> GetFreeAdjacentPositions(Point position, LegacyMap map)
     {
         List<Point> adjacentPositions = new List<Point>();
-        if (map.tileTypeMap[position.X+1, position.Y] == TileContent.Empty)
+        if (position.X + 1 < GameController.playerBot.x_max && map.tileTypeMap[position.X+1, position.Y] == TileContent.Empty)
             adjacentPositions.Add(new Point(position.X + 1, position.Y));
-        if (map.tileTypeMap[position.X - 1, position.Y] == TileContent.Empty)
+        if (position.X - 1 >=0 && map.tileTypeMap[position.X - 1, position.Y] == TileContent.Empty)
             adjacentPositions.Add(new Point(position.X - 1, position.Y));
-        if (map.tileTypeMap[position.X, position.Y + 1] == TileContent.Empty)
+        if (position.Y + 1 < GameController.playerBot.y_max && map.tileTypeMap[position.X, position.Y + 1] == TileContent.Empty)
             adjacentPositions.Add(new Point(position.X, position.Y + 1));
-        if (map.tileTypeMap[position.X, position.Y - 1] == TileContent.Empty)
+        if (position.Y - 1 >= 0 && map.tileTypeMap[position.X, position.Y - 1] == TileContent.Empty)
             adjacentPositions.Add(new Point(position.X, position.Y - 1));
         return adjacentPositions;
     }
@@ -243,12 +294,6 @@ public class MiningStrategy : Strategy
 
         // Trouver le filon le plus proche
         Point closestMineralPosition = GetClosestMineralPosition(player, map);
-
-        if(closestMineralPosition.Y < 12 || closestMineralPosition.Y > 197)
-        {
-            Move moveTowardsHome = new Move(player, map, player.HouseLocation);
-            return moveTowardsHome.NextAction(map, player);
-        }
 
         // Si le filon le plus proche renvoit la maison, ca veut dire quon ne truove rien proche de nous. Nous allons donc aller explorer.
         //if (closestMineralPosition.X == player.HouseLocation.X && closestMineralPosition.Y == player.HouseLocation.Y)

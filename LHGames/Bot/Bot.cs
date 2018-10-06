@@ -5,6 +5,7 @@ using LHGames;
 using LHGames.Actions;
 using LHGames.Helper;
 using Microsoft.AspNetCore.Razor.Language;
+using StarterProject.Web.Api.Controllers;
 
 namespace LHGames.Bot
 {
@@ -303,12 +304,25 @@ public class MiningStrategy : Strategy
 
     public Point GetClosestMineralPosition(IPlayer player, LegacyMap map)
     {
+        int max_x = 0;
+        int max_y = 0;
+        bool online = GameController.playerBot.PlayerInfo.Name != "Player 1";
+        if (!online)
+        {
+            max_x = 66;
+            max_y = 66;
+        }
+        else
+        {
+            max_x = 132;
+            max_y = 198;
+        }
         Point centrer_of_search = player.Position;
         for (int edge = 1; edge < map.tileTypeMap.GetLength(0); edge++)
         {
-            for (int i = centrer_of_search.X - edge; i <= centrer_of_search.X + edge && i >= 0 && i < map.tileTypeMap.GetLength(0); i++)
+            for (int i = centrer_of_search.X - edge; i <= centrer_of_search.X + edge && i >= 0 && i < max_x; i++)
             {
-                for (int j = centrer_of_search.Y - edge; j <= centrer_of_search.Y + edge && j >= 0 && j < map.tileTypeMap.GetLength(1); j++)
+                for (int j = centrer_of_search.Y - edge; j <= centrer_of_search.Y + edge && j >= 0 && j < max_y; j++)
                 {
                     if (map.tileTypeMap[i, j] == TileContent.Resource)
                     {

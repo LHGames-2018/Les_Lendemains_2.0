@@ -29,6 +29,8 @@ namespace LHGames.Bot
             PlayerInfo = playerInfo;
         }
 
+        private bool alreadyTriedToBuy { get; set; }
+
         /// <summary>
         /// Implement your bot here.
         /// </summary>
@@ -37,6 +39,7 @@ namespace LHGames.Bot
         /// <returns>The action you wish to execute.</returns>
         internal string ExecuteTurn(Map map, IEnumerable<IPlayer> visiblePlayers)
         {
+
             Console.WriteLine("My pos = " + PlayerInfo.Position.ToString());
             Console.WriteLine("House  = " + PlayerInfo.HouseLocation.ToString());
             Console.WriteLine("Total  = " + PlayerInfo.TotalResources.ToString());
@@ -49,6 +52,7 @@ namespace LHGames.Bot
                 PlayerInfo.TotalResources >= 10000 &&
                 PlayerInfo.CarryingCapacity == 1000).ToString());
 
+
             //update map of the world
             worldMap.UpdateMap(map.GetVisibleTiles());
             //worldMap.UpdateOtherPLayerMap(gameInfo.OtherPlayers);
@@ -58,23 +62,31 @@ namespace LHGames.Bot
 
             Console.WriteLine("Collect= " + PlayerInfo.CollectingSpeed.ToString());
             Console.WriteLine("Carryin= " + PlayerInfo.CarryingCapacity.ToString());
+=======
 
-            if (PlayerInfo.Position == PlayerInfo.HouseLocation &&
-                PlayerInfo.TotalResources >= 10000 &&
-                PlayerInfo.CollectingSpeed == 1)
-            {
-                Console.WriteLine("Buying a collecting speed");
-                return AIHelper.CreateUpgradeAction(UpgradeType.CollectingSpeed);
-            }
-            if (PlayerInfo.Position == PlayerInfo.HouseLocation &&
-                PlayerInfo.TotalResources >= 10000 &&
-                PlayerInfo.CarryingCapacity == 1000)
+
+            //Bypass upgrade
+            if (PlayerInfo.Position == PlayerInfo.HouseLocation && !alreadyTriedToBuy)
             {
                 Console.WriteLine("Buying a Carrying Capacity");
+                alreadyTriedToBuy = true;
                 return AIHelper.CreateUpgradeAction(UpgradeType.CarryingCapacity);
+            }
+            if (PlayerInfo.Position != PlayerInfo.HouseLocation)
+            {
+                alreadyTriedToBuy = false;
             }
 
 
+
+            //update map of the world
+            worldMap.UpdateMap(map.GetVisibleTiles());
+            //worldMap.UpdateOtherPLayerMap(gameInfo.OtherPlayers);
+            StrategyManager.PickStrategy();
+            return StrategyManager.currentStrategy.GetNextMove(PlayerInfo, visiblePlayers, worldMap);
+            
+            /*string action = null;
+            
             string action = null;
             while (action == null)
             {

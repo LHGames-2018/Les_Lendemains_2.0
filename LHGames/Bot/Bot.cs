@@ -45,7 +45,24 @@ namespace LHGames.Bot
         internal void AfterTurn()
         {
         }
+
+        internal void Scout(IEnumerable<IPlayer> visiblePlayers)
+        {
+            foreach (var visiblePlayer in visiblePlayers)
+            {
+                if (visiblePlayer.Position.X - PlayerInfo.Position.X < 2 &&
+                    visiblePlayer.Position.Y - PlayerInfo.Position.Y < 2)
+                {
+
+                }
+            }
+        }
     }
+
+    
+   
+
+
 }
 
 class TestClass

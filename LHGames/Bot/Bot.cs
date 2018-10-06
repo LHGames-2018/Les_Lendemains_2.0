@@ -35,6 +35,18 @@ namespace LHGames.Bot
         /// <returns>The action you wish to execute.</returns>
         internal string ExecuteTurn(Map map, IEnumerable<IPlayer> visiblePlayers)
         {
+            Console.WriteLine("My pos = " + PlayerInfo.Position.ToString());
+            Console.WriteLine("House  = " + PlayerInfo.HouseLocation.ToString());
+            Console.WriteLine("Total  = " + PlayerInfo.TotalResources.ToString());
+            Console.WriteLine("Collect= " + PlayerInfo.CollectingSpeed.ToString());
+            Console.WriteLine("Carryin= " + PlayerInfo.CarryingCapacity.ToString());
+            Console.WriteLine("C1     = " + (PlayerInfo.Position == PlayerInfo.HouseLocation &&
+                PlayerInfo.TotalResources >= 10000 &&
+                PlayerInfo.CollectingSpeed == 1).ToString());
+            Console.WriteLine("C2     = " + (PlayerInfo.Position == PlayerInfo.HouseLocation &&
+                PlayerInfo.TotalResources >= 10000 &&
+                PlayerInfo.CarryingCapacity == 1000).ToString());
+
             //update map of the world
             worldMap.UpdateMap(map.GetVisibleTiles());
             //worldMap.UpdateOtherPLayerMap(gameInfo.OtherPlayers);

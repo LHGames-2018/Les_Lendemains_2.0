@@ -29,8 +29,7 @@ namespace LHGames.Bot
         {
             PlayerInfo = playerInfo;
         }
-
-        private bool alreadyTriedToBuy { get; set; }
+        
 
         /// <summary>
         /// Implement your bot here.
@@ -46,12 +45,40 @@ namespace LHGames.Bot
             Console.WriteLine("Total  = " + PlayerInfo.TotalResources.ToString());
             Console.WriteLine("Collect= " + PlayerInfo.CollectingSpeed.ToString());
             Console.WriteLine("Carryin= " + PlayerInfo.CarryingCapacity.ToString());
+            Console.WriteLine("Atk    = " + PlayerInfo.AttackPower.ToString());
+            Console.WriteLine("Def    = " + PlayerInfo.Defence.ToString());
+            Console.WriteLine("Health = " + PlayerInfo.Health.ToString());
+            Console.WriteLine("Max Hea= " + PlayerInfo.MaxHealth.ToString());
             Console.WriteLine("C1     = " + (PlayerInfo.Position == PlayerInfo.HouseLocation &&
                 PlayerInfo.TotalResources >= 10000 &&
                 PlayerInfo.CollectingSpeed == 1).ToString());
             Console.WriteLine("C2     = " + (PlayerInfo.Position == PlayerInfo.HouseLocation &&
                 PlayerInfo.TotalResources >= 10000 &&
                 PlayerInfo.CarryingCapacity == 1000).ToString());
+
+
+            //Bypass upgrade
+            if (PlayerInfo.Position == PlayerInfo.HouseLocation &&
+                PlayerInfo.TotalResources >= 10000 &&
+                PlayerInfo.CarryingCapacity == 1000)
+            {
+                Console.WriteLine("Buying a Carrying Capacity");
+                return AIHelper.CreateUpgradeAction(UpgradeType.CarryingCapacity);
+            }
+            if (PlayerInfo.Position == PlayerInfo.HouseLocation &&
+                PlayerInfo.TotalResources >= 10000 &&
+                PlayerInfo.CarryingCapacity == 1250)
+            {
+                Console.WriteLine("Buying a Carrying Capacity");
+                return AIHelper.CreateUpgradeAction(UpgradeType.CarryingCapacity);
+            }
+            if (PlayerInfo.Position == PlayerInfo.HouseLocation &&
+                PlayerInfo.TotalResources >= 10000 &&
+                PlayerInfo.AttackPower == 1)
+            {
+                Console.WriteLine("Buying a Attack");
+                return AIHelper.CreateUpgradeAction(UpgradeType.AttackPower);
+            }
 
 
             //update map of the world
@@ -154,18 +181,24 @@ public class Strategy
         return "";
     }
 
-    public Point GetFreeAdjacentPosition(Point position, LegacyMap map)
+    public Point GetClosestFreeAdjacentPosition(IPlayer player, Point position, LegacyMap map)
     {
-        Point adjacentPoint;
+        List<Point> freeAdjacentPositions = GetFreeAdjacentPositions(position, map);
+        return freeAdjacentPositions.OrderByDescending(p => Point.DistanceManhatan(p, player.Position)).LastOrDefault();
+    }
+
+    public List<Point> GetFreeAdjacentPositions(Point position, LegacyMap map)
+    {
+        List<Point> adjacentPositions = new List<Point>();
         if (map.tileTypeMap[position.X+1, position.Y] == TileContent.Empty)
-            return new Point(position.X + 1, position.Y);
-        else if (map.tileTypeMap[position.X - 1, position.Y] == TileContent.Empty)
-            return new Point(position.X - 1, position.Y);
-        else if (map.tileTypeMap[position.X, position.Y + 1] == TileContent.Empty)
-            return new Point(position.X, position.Y + 1);
-        else if (map.tileTypeMap[position.X, position.Y - 1] == TileContent.Empty)
-            return new Point(position.X, position.Y - 1);
-        return null;
+            adjacentPositions.Add(new Point(position.X + 1, position.Y));
+        if (map.tileTypeMap[position.X - 1, position.Y] == TileContent.Empty)
+            adjacentPositions.Add(new Point(position.X - 1, position.Y));
+        if (map.tileTypeMap[position.X, position.Y + 1] == TileContent.Empty)
+            adjacentPositions.Add(new Point(position.X, position.Y + 1));
+        if (map.tileTypeMap[position.X, position.Y - 1] == TileContent.Empty)
+            adjacentPositions.Add(new Point(position.X, position.Y - 1));
+        return adjacentPositions;
     }
 
 }
@@ -189,7 +222,24 @@ public class MiningStrategy : Strategy
 
         // Trouver le filon le plus proche
         Point closestMineralPosition = GetClosestMineralPosition(player, map);
-        Point closestMineralAdjacentPosition = GetFreeAdjacentPosition(closestMineralPosition, map);
+
+        // Si le filon le plus proche renvoit la maison, ca veut dire quon ne truove rien proche de nous. Nous allons donc aller explorer.
+        if (closestMineralPosition.X == player.HouseLocation.X && closestMineralPosition.Y == player.HouseLocation.Y)
+        {
+            Random random = new Random();
+            int randomlyGeneratedNumber = random.Next(1, 3);
+            if (randomlyGeneratedNumber == 1)
+            {
+                return AIHelper.CreateMoveAction(new Point(1, 0));
+            }
+            else
+            {
+                return AIHelper.CreateMoveAction(new Point(0, -1));
+            }
+        }
+
+        // Sinon, good, on a qqch a miner. On trouve la case a partir de laquelle on va miner
+        Point closestMineralAdjacentPosition = GetClosestFreeAdjacentPosition(player, closestMineralPosition, map);
 
         // Si on est colles au filon, le miner
         if (Point.DistanceManhatan(closestMineralPosition, player.Position) <= 1)
@@ -205,12 +255,12 @@ public class MiningStrategy : Strategy
 
     public Point GetClosestMineralPosition(IPlayer player, LegacyMap map)
     {
-        Point houseLocaltion = player.HouseLocation;
+        Point centrer_of_search = player.Position;
         for (int edge = 1; edge < map.tileTypeMap.GetLength(0); edge++)
         {
-            for (int i = houseLocaltion.X - edge; i <= houseLocaltion.X + edge && i >= 0 && i < map.tileTypeMap.GetLength(0); i++)
+            for (int i = centrer_of_search.X - edge; i <= centrer_of_search.X + edge && i >= 0 && i < map.tileTypeMap.GetLength(0); i++)
             {
-                for (int j = houseLocaltion.Y - edge; j <= houseLocaltion.Y + edge && j >= 0 && j < map.tileTypeMap.GetLength(1); j++)
+                for (int j = centrer_of_search.Y - edge; j <= centrer_of_search.Y + edge && j >= 0 && j < map.tileTypeMap.GetLength(1); j++)
                 {
                     if (map.tileTypeMap[i, j] == TileContent.Resource)
                     {

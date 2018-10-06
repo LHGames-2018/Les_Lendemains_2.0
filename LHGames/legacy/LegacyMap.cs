@@ -32,11 +32,11 @@ namespace LHGames
         public void UpdateMap(IEnumerable<Tile> visibleTiles)
         {
 
-            var temp = StorageHelper.Read<TileContent[,]>("mymap");
-            if(temp != null)
-            {
-                tileTypeMap = temp;
-            }
+            //var temp = StorageHelper.Read<TileContent[,]>("mymap");
+            //if(temp != null)
+            //{
+            //    tileTypeMap = temp;
+            //}
 
             foreach (Tile t in visibleTiles)
             {
@@ -57,7 +57,7 @@ namespace LHGames
                 tileTypeMap[x, y] = t.TileType;
             }
 
-            StorageHelper.Write("mymap", tileTypeMap);
+            //StorageHelper.Write("mymap", tileTypeMap);
         }
     }
 }

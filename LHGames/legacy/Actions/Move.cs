@@ -17,6 +17,9 @@ namespace LHGames.Actions
             Node start = new Node(goal, player.Position, null, map.tileTypeMap[player.Position.X, player.Position.Y]);
             var a = new AStar.AStar(start, goal);
             var status = a.Run();
+            // debug show path
+            Console.WriteLine("Current Goal : " + goal.Point.X + ", " + goal.Point.Y);
+            Console.WriteLine("Goal node type : " + goal.tileContent.ToString());
             if(status != AStar.State.GoalFound)
             {
                 path = null;

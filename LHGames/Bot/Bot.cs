@@ -317,19 +317,29 @@ public class MiningStrategy : Strategy
             max_x = 132;
             max_y = 198;
         }
-        Point centrer_of_search = player.Position;
-        for (int edge = 1; edge < map.tileTypeMap.GetLength(0); edge++)
+
+        Point centerOfSearch = player.Position;
+        
+        for (int edge = 1; edge < max_x  && edge < max_y; edge++)
         {
-            for (int i = centrer_of_search.X - edge; i <= centrer_of_search.X + edge && i >= 0 && i < max_x; i++)
+            for (int i = centerOfSearch.X - edge; i < max_x && i < centerOfSearch.X + edge; i++)
             {
-                for (int j = centrer_of_search.Y - edge; j <= centrer_of_search.Y + edge && j >= 0 && j < max_y; j++)
+                if (i > 0)
                 {
-                    if (map.tileTypeMap[i, j] == TileContent.Resource)
+                    for (int j = centerOfSearch.Y - edge; j < max_y && j < centerOfSearch.Y + edge; j++)
                     {
-                        return new Point(i, j);
-                        
+                        if (j > 0)
+                        {
+                            if (map.tileTypeMap[i, j] == TileContent.Resource)
+                            {
+
+                                return new Point(i, j);
+
+                            }
+                        }
                     }
                 }
+
             }
         }
 

@@ -231,21 +231,21 @@ public class MiningStrategy : Strategy
         Point closestMineralPosition = GetClosestMineralPosition(player, map);
 
         // Si le filon le plus proche renvoit la maison, ca veut dire quon ne truove rien proche de nous. Nous allons donc aller explorer.
-        if (closestMineralPosition.X == player.HouseLocation.X && closestMineralPosition.Y == player.HouseLocation.Y)
-        {
-            Random random = new Random();
-            int randomlyGeneratedNumber = random.Next(1, 3);
-            if (randomlyGeneratedNumber == 1)
-            {
-                Move moveTowardsHome = new Move(player, map, new Point(player.Position.X + 1, player.Position.Y));
-                return moveTowardsHome.NextAction(map, player);
-            }
-            else
-            {
-                Move moveTowardsHome = new Move(player, map, new Point(player.Position.X, player.Position.Y -1));
-                return moveTowardsHome.NextAction(map, player);
-            }
-        }
+        //if (closestMineralPosition.X == player.HouseLocation.X && closestMineralPosition.Y == player.HouseLocation.Y)
+        //{
+        //    Random random = new Random();
+        //    int randomlyGeneratedNumber = random.Next(1, 3);
+        //    if (randomlyGeneratedNumber == 1)
+        //    {
+        //        Move moveTowardsHome = new Move(player, map, new Point(player.Position.X + 1, player.Position.Y));
+        //        return moveTowardsHome.NextAction(map, player);
+        //    }
+        //    else
+        //    {
+        //        Move moveTowardsHome = new Move(player, map, new Point(player.Position.X, player.Position.Y -1));
+        //        return moveTowardsHome.NextAction(map, player);
+        //    }
+        //}
 
         // Sinon, good, on a qqch a miner. On trouve la case a partir de laquelle on va miner
         Point closestMineralAdjacentPosition = GetClosestFreeAdjacentPosition(player, closestMineralPosition, map);

@@ -28,8 +28,7 @@ namespace LHGames.Bot
         {
             PlayerInfo = playerInfo;
         }
-
-        private bool alreadyTriedToBuy { get; set; }
+        
 
         /// <summary>
         /// Implement your bot here.
@@ -45,12 +44,40 @@ namespace LHGames.Bot
             Console.WriteLine("Total  = " + PlayerInfo.TotalResources.ToString());
             Console.WriteLine("Collect= " + PlayerInfo.CollectingSpeed.ToString());
             Console.WriteLine("Carryin= " + PlayerInfo.CarryingCapacity.ToString());
+            Console.WriteLine("Atk    = " + PlayerInfo.AttackPower.ToString());
+            Console.WriteLine("Def    = " + PlayerInfo.Defence.ToString());
+            Console.WriteLine("Health = " + PlayerInfo.Health.ToString());
+            Console.WriteLine("Max Hea= " + PlayerInfo.MaxHealth.ToString());
             Console.WriteLine("C1     = " + (PlayerInfo.Position == PlayerInfo.HouseLocation &&
                 PlayerInfo.TotalResources >= 10000 &&
                 PlayerInfo.CollectingSpeed == 1).ToString());
             Console.WriteLine("C2     = " + (PlayerInfo.Position == PlayerInfo.HouseLocation &&
                 PlayerInfo.TotalResources >= 10000 &&
                 PlayerInfo.CarryingCapacity == 1000).ToString());
+
+
+            //Bypass upgrade
+            if (PlayerInfo.Position == PlayerInfo.HouseLocation &&
+                PlayerInfo.TotalResources >= 10000 &&
+                PlayerInfo.CarryingCapacity == 1000)
+            {
+                Console.WriteLine("Buying a Carrying Capacity");
+                return AIHelper.CreateUpgradeAction(UpgradeType.CarryingCapacity);
+            }
+            if (PlayerInfo.Position == PlayerInfo.HouseLocation &&
+                PlayerInfo.TotalResources >= 10000 &&
+                PlayerInfo.CarryingCapacity == 1250)
+            {
+                Console.WriteLine("Buying a Carrying Capacity");
+                return AIHelper.CreateUpgradeAction(UpgradeType.CarryingCapacity);
+            }
+            if (PlayerInfo.Position == PlayerInfo.HouseLocation &&
+                PlayerInfo.TotalResources >= 10000 &&
+                PlayerInfo.AttackPower == 1)
+            {
+                Console.WriteLine("Buying a Attack");
+                return AIHelper.CreateUpgradeAction(UpgradeType.AttackPower);
+            }
 
 
             //update map of the world

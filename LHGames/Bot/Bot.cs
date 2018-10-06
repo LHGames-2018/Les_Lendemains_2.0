@@ -194,6 +194,23 @@ public class MiningStrategy : Strategy
 
         // Trouver le filon le plus proche
         Point closestMineralPosition = GetClosestMineralPosition(player, map);
+
+        // Si le filon le plus proche renvoit la maison, ca veut dire quon ne truove rien proche de nous. Nous allons donc aller explorer.
+        if (closestMineralPosition.X == player.HouseLocation.X && closestMineralPosition.Y == player.HouseLocation.Y)
+        {
+            Random random = new Random();
+            int randomlyGeneratedNumber = random.Next(1, 3);
+            if (randomlyGeneratedNumber == 1)
+            {
+                return AIHelper.CreateMoveAction(new Point(1, 0));
+            }
+            else
+            {
+                return AIHelper.CreateMoveAction(new Point(0, -1));
+            }
+        }
+
+        // Sinon, good, on a qqch a miner. On trouve la case a partir de laquelle on va miner
         Point closestMineralAdjacentPosition = GetClosestFreeAdjacentPosition(player, closestMineralPosition, map);
 
         // Si on est colles au filon, le miner

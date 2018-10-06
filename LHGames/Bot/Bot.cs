@@ -255,6 +255,25 @@ public class MiningStrategy : Strategy
                 closestMineralPosition.Y - player.Position.Y));
         }
 
+        // Si aller passer par la maison avant daller au filon ne nous ralenti pas, on va aller a la maison tds 
+        // Verifier si on doit rentrer pour drop nos ressources
+        if ((player.CarriedResources >= 500) &&
+            ((player.Position.X <= player.HouseLocation.X && closestMineralAdjacentPosition.X >= player.HouseLocation.X
+            && player.Position.Y <= player.HouseLocation.Y && closestMineralAdjacentPosition.Y >= player.HouseLocation.Y)
+
+            || (player.Position.X <= player.HouseLocation.X && closestMineralAdjacentPosition.X >= player.HouseLocation.X
+            && player.Position.Y >= player.HouseLocation.Y && closestMineralAdjacentPosition.Y <= player.HouseLocation.Y)
+
+            || (player.Position.X >= player.HouseLocation.X && closestMineralAdjacentPosition.X <= player.HouseLocation.X
+            && player.Position.Y >= player.HouseLocation.Y && closestMineralAdjacentPosition.Y <= player.HouseLocation.Y)
+
+            || (player.Position.X >= player.HouseLocation.X && closestMineralAdjacentPosition.X <= player.HouseLocation.X
+            && player.Position.Y <= player.HouseLocation.Y && closestMineralAdjacentPosition.Y >= player.HouseLocation.Y)))
+        {
+            Move moveTowardsHome = new Move(player, map, player.HouseLocation);
+            return moveTowardsHome.NextAction(map, player);
+        }
+
         // Si on est pas colles, quon rentre pas, aller vers le filon
         Move moveTowardsMineral = new Move(player, map, closestMineralAdjacentPosition);
         return moveTowardsMineral.NextAction(map, player);

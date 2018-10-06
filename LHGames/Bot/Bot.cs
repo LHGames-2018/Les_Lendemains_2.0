@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Razor.Language;
 
 namespace LHGames.Bot
 {
+    
     internal class Bot
     {
         //legacy variable
@@ -262,6 +263,27 @@ public class defendHomeStrategy : Strategy
     }
 }
 
+public class agressiveStrategy : Strategy
+{
+    public IPlayer prey { get; set; }
+    public override string GetNextMove(IPlayer player, IEnumerable<IPlayer> visiblePlayers, LegacyMap map)
+    {
+        int distance = Point.DistanceManhatan(player.Position, prey.Position);
+        if (distance <= 1)
+        {
+            return AIHelper.CreateMeleeAttackAction(new Point( prey.Position.X - player.Position.X , prey.Position.Y - player.Position.Y));
+        }
+        else
+        {
+            Move direction =  new Move(player, map, prey.Position);
+            return direction.NextAction(map, player);
+
+
+        }
+    }
+}
+
+
 
 
 
@@ -302,6 +324,40 @@ public static class StrategyManager
         return isFighting;
     }
 
+
+    public static bool IsAttacking(IPlayer player, IEnumerable<IPlayer> visiblePlayers)
+    {
+        int attackDistance = 1;
+        IPlayer target;
+        bool attack = false;
+        if (visiblePlayers.Count() > 0)
+        {
+            target = visiblePlayers.First();
+            foreach (var visiblePlayer in visiblePlayers)
+            {
+                if (visiblePlayer.Defence * visiblePlayer.AttackPower <= player.Defence * player.AttackPower &&
+                    visiblePlayer.Health <= player.Health )
+                {
+                    if (Point.DistanceManhatan(visiblePlayer.Position, player.Position) <
+                        Point.DistanceManhatan(target.Position, player.Position) && Point.DistanceManhatan(visiblePlayer.Position, player.Position) < attackDistance)
+                    {
+                        target = visiblePlayer;
+                        attack = true;
+                    }
+                }
+            }
+
+            if (attack)
+            {
+                currentStrategy = new agressiveStrategy();
+                (currentStrategy as agressiveStrategy).prey = target;
+            }
+        }
+
+     
+
+        return attack;
+    }
 }
 
 

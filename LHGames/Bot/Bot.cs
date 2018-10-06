@@ -9,8 +9,8 @@ namespace LHGames.Bot
     internal class Bot
     {
         //legacy variable
-        static Strategy strategy = new Strategy();
-        static HighAction currentAction = null;
+        //static Strategy strategy = new Strategy();
+        //static HighAction currentAction = null;
         public LegacyMap worldMap = new LegacyMap();
         // already there variable
         internal IPlayer PlayerInfo { get; set; }
@@ -38,8 +38,9 @@ namespace LHGames.Bot
             //update map of the world
             worldMap.UpdateMap(map.GetVisibleTiles());
             //worldMap.UpdateOtherPLayerMap(gameInfo.OtherPlayers);
-
-            string action = null;
+            StrategyManager.PickStrategy();
+            return StrategyManager.currentStrategy.GetNextMove(PlayerInfo, visiblePlayers, worldMap);
+            /*string action = null;
             while (action == null)
             {
                 if (currentAction == null)
@@ -58,7 +59,7 @@ namespace LHGames.Bot
                 }
             }
           
-            return action;
+            return action;*/
             
         }
 
@@ -104,6 +105,21 @@ public class Strategy
     {
         return "";
     }
+
+    public Point GetFreeAdjacentPosition(Point position, LegacyMap map)
+    {
+        Point adjacentPoint;
+        if (map.tileTypeMap[position.X+1, position.Y] == TileContent.Empty)
+            return new Point(position.X + 1, position.Y);
+        else if (map.tileTypeMap[position.X - 1, position.Y] == TileContent.Empty)
+            return new Point(position.X - 1, position.Y);
+        else if (map.tileTypeMap[position.X, position.Y + 1] == TileContent.Empty)
+            return new Point(position.X, position.Y + 1);
+        else if (map.tileTypeMap[position.X, position.Y - 1] == TileContent.Empty)
+            return new Point(position.X, position.Y - 1);
+        return null;
+    }
+
 }
 
 public class MiningStrategy : Strategy
@@ -111,7 +127,7 @@ public class MiningStrategy : Strategy
     public override string GetNextMove(IPlayer player, IEnumerable<IPlayer> visiblePlayers, LegacyMap map)
     {
         // Dropper nos ressoruces si on est colles a la maison
-        if (Point.DistanceManhatan(player.HouseLocation, player.Position) == 0)
+        if (Point.DistanceManhatan(player.HouseLocation, player.Position) == 0 && player.CarriedResources > 0)
         {
             return AIHelper.CreateEmptyAction();
         }
@@ -119,11 +135,13 @@ public class MiningStrategy : Strategy
         // Verifier si on doit rentrer pour drop nos ressources
         if (player.CarryingCapacity - player.CarriedResources < 100)
         {
-            
+            Move moveTowardsHome = new Move(player, map, player.HouseLocation);
+            return moveTowardsHome.NextAction(map, player);
         }
 
         // Trouver le filon le plus proche
         Point closestMineralPosition = GetClosestMineralPosition(player, map);
+        Point closestMineralAdjacentPosition = GetFreeAdjacentPosition(closestMineralPosition, map);
 
         // Si on est colles au filon, le miner
         if (Point.DistanceManhatan(closestMineralPosition, player.Position) <= 1)
@@ -133,21 +151,18 @@ public class MiningStrategy : Strategy
         }
 
         // Si on est pas colles, quon rentre pas, aller vers le filon
-       //MultipleActions.MoveThenCollect(player, map, closestMineralPosition);
-
-        return AIHelper.CreateMoveAction(new Point(1, 0));
-
-
+        Move moveTowardsMineral = new Move(player, map, closestMineralAdjacentPosition);
+        return moveTowardsMineral.NextAction(map, player);
     }
 
     public Point GetClosestMineralPosition(IPlayer player, LegacyMap map)
     {
-        Point playerPosition = player.Position;
+        Point houseLocaltion = player.HouseLocation;
         for (int edge = 1; edge < map.tileTypeMap.GetLength(0); edge++)
         {
-            for (int i = playerPosition.X - edge; i <= playerPosition.X + edge && i >= 0 && i < map.tileTypeMap.GetLength(0); i++)
+            for (int i = houseLocaltion.X - edge; i <= houseLocaltion.X + edge && i >= 0 && i < map.tileTypeMap.GetLength(0); i++)
             {
-                for (int j = playerPosition.Y - edge; j <= playerPosition.Y + edge && j >= 0 && j < map.tileTypeMap.GetLength(1); j++)
+                for (int j = houseLocaltion.Y - edge; j <= houseLocaltion.Y + edge && j >= 0 && j < map.tileTypeMap.GetLength(1); j++)
                 {
                     if (map.tileTypeMap[i, j] == TileContent.Resource)
                     {

@@ -44,7 +44,7 @@ namespace LHGames
                 int y = t.Position.Y;
 
                 bool online = GameController.playerBot.PlayerInfo.Name != "Player 1";
-                if (online)
+                if (!online)
                 {
                     if (x < 0) { x += 66; }
                     if (y < 0) { y += 66; }

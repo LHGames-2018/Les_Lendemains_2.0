@@ -99,6 +99,7 @@ namespace LHGames.Helper
                     }
                     if (tileType != (byte)TileContent.Resource)
                     {
+
                         Tiles[i, j] = new Tile(tileType, i + XMin, j + YMin);
                     }
                 }

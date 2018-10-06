@@ -80,7 +80,7 @@ namespace LHGames.Nodes
                 int cost = movementCost + estimatedCost;
                 if (tileContent == TileContent.Wall)
                 {
-                    cost += 10000;
+                    cost += Math.Max(5 - GameController.playerBot.PlayerInfo.AttackPower, 2);
                 }
                 return cost;
             }
@@ -127,7 +127,8 @@ namespace LHGames.Nodes
         /// <remarks>The children can be setup in a graph before starting the
         /// A* algorithm or they can be dynamically generated the first time
         /// the A* algorithm calls this property.</remarks>
-        public IEnumerable<INode> Children {
+        public IEnumerable<INode> Children
+        {
             get
             {
                 List<Node> childs = new List<Node>();
@@ -147,7 +148,7 @@ namespace LHGames.Nodes
                         childs.Add(create(goalNode, new Point(Point.X - 1, Point.Y), this, type));
                     }
                 }
-                if (Point.Y -1 >= 0)
+                if (Point.Y - 1 >= 0)
                 {
                     var type = GameController.playerBot.worldMap.tileTypeMap[Point.X, Point.Y - 1];
                     if (filterType(type))
@@ -176,7 +177,7 @@ namespace LHGames.Nodes
         protected virtual bool filterType(TileContent type)
         {
             //added wall to filter tempary because we can't kill wall in the begenning phase
-            return type != TileContent.Resource && type != TileContent.Lava && type != TileContent.Wall /*&& type != TileType.U*/;
+            return type != TileContent.Resource && type != TileContent.Lava/*&& type != TileType.U*/;
         }
 
         protected virtual Node create(Node goalNode, Point point, Node parent, TileContent tileType)

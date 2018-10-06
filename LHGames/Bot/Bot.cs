@@ -41,6 +41,27 @@ namespace LHGames.Bot
             StrategyManager.PickStrategy();
             return StrategyManager.currentStrategy.GetNextMove(PlayerInfo, visiblePlayers, worldMap);
             /*string action = null;
+
+            Console.WriteLine("Collect= " + PlayerInfo.CollectingSpeed.ToString());
+            Console.WriteLine("Carryin= " + PlayerInfo.CarryingCapacity.ToString());
+
+            if (PlayerInfo.Position == PlayerInfo.HouseLocation &&
+                PlayerInfo.TotalResources >= 10000 &&
+                PlayerInfo.CollectingSpeed == 1)
+            {
+                Console.WriteLine("Buying a collecting speed");
+                return AIHelper.CreateUpgradeAction(UpgradeType.CollectingSpeed);
+            }
+            if (PlayerInfo.Position == PlayerInfo.HouseLocation &&
+                PlayerInfo.TotalResources >= 10000 &&
+                PlayerInfo.CarryingCapacity == 1000)
+            {
+                Console.WriteLine("Buying a Carrying Capacity");
+                return AIHelper.CreateUpgradeAction(UpgradeType.CarryingCapacity);
+            }
+
+
+            string action = null;
             while (action == null)
             {
                 if (currentAction == null)

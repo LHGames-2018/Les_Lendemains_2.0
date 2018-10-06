@@ -44,11 +44,11 @@ namespace LHGames
         private HighAction collectAction(LegacyMap map, IPlayer player)
         {
             Point playerPosition = player.Position;
-            for (int edge = 1; edge < map.tileTypeMap.GetLength(0); edge++)
+            for (int edge = 1; edge < map.tileTypeMap.GetLength(0); edge++) 
             {
-                for (int i = playerPosition.X - edge; i <= playerPosition.X + edge && i >= 0 && i < map.tileTypeMap.GetLength(0); i++)
+                for (int i = player.HouseLocation.X - edge; i <= player.HouseLocation.X + edge && i >= 0 && i < map.tileTypeMap.GetLength(0); i++)
                 {
-                    for (int j = playerPosition.Y - edge; j <= playerPosition.Y + edge && j >= 0 && j < map.tileTypeMap.GetLength(1); j++)
+                    for (int j = player.HouseLocation.Y - edge; j <= player.HouseLocation.Y + edge && j >= 0 && j < map.tileTypeMap.GetLength(1); j++)
                     {
                         if (map.tileTypeMap[i, j] == TileContent.Resource)
                         {

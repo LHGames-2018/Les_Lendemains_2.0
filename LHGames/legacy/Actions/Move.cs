@@ -59,8 +59,8 @@ namespace LHGames.Actions
                 else if (type == TileContent.Wall)
                 {
                     Console.WriteLine("RAWR");
-                    return AIHelper.CreateMeleeAttackAction(p - player.Position);
-                    
+                    //return AIHelper.CreateMeleeAttackAction(p - player.Position); //hotfix degueu
+                    return AIHelper.CreateMoveAction(new Point(0, -1));
                 }
                 idx++;
                 return AIHelper.CreateMoveAction(p - player.Position);

@@ -229,11 +229,13 @@ public class MiningStrategy : Strategy
             int randomlyGeneratedNumber = random.Next(1, 3);
             if (randomlyGeneratedNumber == 1)
             {
-                return AIHelper.CreateMoveAction(new Point(1, 0));
+                Move moveTowardsHome = new Move(player, map, new Point(player.Position.X + 1, player.Position.Y));
+                return moveTowardsHome.NextAction(map, player);
             }
             else
             {
-                return AIHelper.CreateMoveAction(new Point(0, -1));
+                Move moveTowardsHome = new Move(player, map, new Point(player.Position.X, player.Position.Y -1));
+                return moveTowardsHome.NextAction(map, player);
             }
         }
 

@@ -41,7 +41,8 @@ namespace LHGames.Helper
         Lava,
         Resource,
         Shop,
-        Player
+        Player,
+        Unknown
     }
 
     public struct GameInfo

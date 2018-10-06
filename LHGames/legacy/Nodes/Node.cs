@@ -16,7 +16,7 @@ namespace LHGames.Nodes
             this.goalNode = goalNode;
             Point = point;
             Parent = parent;
-            tileContent = tileContent;
+            tileContent = tileType;
         }
         private Node goalNode;
         public Point Point { get; set; }
@@ -80,7 +80,7 @@ namespace LHGames.Nodes
                 int cost = movementCost + estimatedCost;
                 if (tileContent == TileContent.Wall)
                 {
-                    cost += Math.Max(5 - GameController.playerBot.PlayerInfo.AttackPower, 2);
+                    cost += Math.Max(5 / GameController.playerBot.PlayerInfo.AttackPower, 1);
                 }
                 return cost;
             }

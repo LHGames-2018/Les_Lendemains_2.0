@@ -21,7 +21,10 @@ namespace LHGames.Helper
         public static bool operator ==(Point pt1, Point pt2) => Equals(pt1, pt2);
         public static bool operator !=(Point pt1, Point pt2) => !Equals(pt1, pt2);
         public override bool Equals(object obj) => obj is Point pt2 && X == pt2.X && Y == pt2.Y;
-
+        static public int DistanceManhatan(Point target, Point start)
+        {
+            return Math.Abs(target.X - start.X) + Math.Abs(target.Y - start.Y);
+        }
         public override int GetHashCode()
         {
             var hashCode = 1861411795;

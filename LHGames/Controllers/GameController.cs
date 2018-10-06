@@ -12,7 +12,7 @@ namespace StarterProject.Web.Api.Controllers
     [Route("/")]
     public class GameController : Controller
     {
-        static Bot playerBot = new Bot();
+        internal static Bot playerBot = new Bot();
 
         [HttpPost]
         public string Index([FromForm]string data)

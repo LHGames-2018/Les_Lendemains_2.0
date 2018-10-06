@@ -37,6 +37,22 @@ namespace LHGames.Bot
             worldMap.UpdateMap(map.GetVisibleTiles());
             //worldMap.UpdateOtherPLayerMap(gameInfo.OtherPlayers);
 
+            if (PlayerInfo.Position == PlayerInfo.HouseLocation &&
+                PlayerInfo.TotalResources >= 10000 &&
+                PlayerInfo.CollectingSpeed == 1)
+            {
+                Console.WriteLine("Buying a collecting speed");
+                return AIHelper.CreateUpgradeAction(UpgradeType.CollectingSpeed);
+            }
+            if (PlayerInfo.Position == PlayerInfo.HouseLocation &&
+                PlayerInfo.TotalResources >= 10000 &&
+                PlayerInfo.CarryingCapacity == 1000)
+            {
+                Console.WriteLine("Buying a Carrying Capacity");
+                return AIHelper.CreateUpgradeAction(UpgradeType.CarryingCapacity);
+            }
+
+
             string action = null;
             while (action == null)
             {

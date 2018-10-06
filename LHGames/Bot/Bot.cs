@@ -247,6 +247,7 @@ public class MiningStrategy : Strategy
         //    }
         //}
 
+
         // Sinon, good, on a qqch a miner. On trouve la case a partir de laquelle on va miner
         Point closestMineralAdjacentPosition = GetClosestFreeAdjacentPosition(player, closestMineralPosition, map);
 

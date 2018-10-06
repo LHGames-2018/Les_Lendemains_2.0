@@ -57,16 +57,9 @@ namespace LHGames.Bot
                     currentAction = null;
                 }
             }
-            // TODO: Implement your AI here.
-            if (map.GetTileAt(PlayerInfo.Position.X + _currentDirection, PlayerInfo.Position.Y) == TileContent.Wall)
-            {
-                _currentDirection *= -1;
-            }
-
-            var data = StorageHelper.Read<TestClass>("Test");
-            Console.WriteLine(data?.Test);
-
-            return AIHelper.CreateMoveAction(new Point(_currentDirection, 0));
+          
+            return action;
+            
         }
 
         /// <summary>

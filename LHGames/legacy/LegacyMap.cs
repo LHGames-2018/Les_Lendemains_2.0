@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LHGames.Helper;
+using StarterProject.Web.Api.Controllers;
+
 namespace LHGames
 {
     public class LegacyMap
@@ -31,7 +33,21 @@ namespace LHGames
         {
             foreach(Tile t in visibleTiles)
             {
-                tileTypeMap[t.Position.X, t.Position.Y] = t.TileType;
+                int x = t.Position.X;
+                int y = t.Position.Y;
+
+                bool online = GameController.playerBot.PlayerInfo.Name != "Player 1";
+                if (online)
+                {
+                    if (x < 0) { x += 66; }
+                    if (y < 0) { y += 66; }
+                }
+                else
+                {
+                    if (x < 0) { x += 132; }
+                    if (y < 0) { y += 198; }
+                }
+                tileTypeMap[x, y] = t.TileType;
             }
         }
     }

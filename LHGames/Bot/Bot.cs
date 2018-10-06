@@ -220,7 +220,8 @@ public class MiningStrategy : Strategy
             }
         }
 
-        return player.Position;
+        // Retourner a la maison si jamais on trouve rien
+        return player.HouseLocation;
     }
 
 }

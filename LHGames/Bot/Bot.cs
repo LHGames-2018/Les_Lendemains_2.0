@@ -210,12 +210,12 @@ public class MiningStrategy : Strategy
 
     public Point GetClosestMineralPosition(IPlayer player, LegacyMap map)
     {
-        Point houseLocaltion = player.HouseLocation;
+        Point centrer_of_search = player.Position;
         for (int edge = 1; edge < map.tileTypeMap.GetLength(0); edge++)
         {
-            for (int i = houseLocaltion.X - edge; i <= houseLocaltion.X + edge && i >= 0 && i < map.tileTypeMap.GetLength(0); i++)
+            for (int i = centrer_of_search.X - edge; i <= centrer_of_search.X + edge && i >= 0 && i < map.tileTypeMap.GetLength(0); i++)
             {
-                for (int j = houseLocaltion.Y - edge; j <= houseLocaltion.Y + edge && j >= 0 && j < map.tileTypeMap.GetLength(1); j++)
+                for (int j = centrer_of_search.Y - edge; j <= centrer_of_search.Y + edge && j >= 0 && j < map.tileTypeMap.GetLength(1); j++)
                 {
                     if (map.tileTypeMap[i, j] == TileContent.Resource)
                     {

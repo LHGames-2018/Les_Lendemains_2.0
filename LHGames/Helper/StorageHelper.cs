@@ -70,6 +70,7 @@ namespace LHGames.Helper
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+                _document = new Dictionary<string, string>();
             }
         }
 

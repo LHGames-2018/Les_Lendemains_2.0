@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using LHGames;
+using LHGames.Actions;
 using LHGames.Helper;
 
 namespace LHGames.Bot
@@ -91,6 +93,124 @@ namespace LHGames.Bot
 
 
 }
+
+
+
+public class Strategy
+{
+
+    public virtual string GetNextMove(IPlayer player, IEnumerable<IPlayer> visiblePlayers, LegacyMap map)
+    {
+        return "";
+    }
+}
+
+public class MiningStrategy : Strategy
+{
+    public override string GetNextMove(IPlayer player, IEnumerable<IPlayer> visiblePlayers, LegacyMap map)
+    {
+        // Dropper nos ressoruces si on est colles a la maison
+        if (Point.DistanceManhatan(player.HouseLocation, player.Position) == 0)
+        {
+            return AIHelper.CreateEmptyAction();
+        }
+
+        // Verifier si on doit rentrer pour drop nos ressources
+        if (player.CarryingCapacity - player.CarriedResources < 100)
+        {
+            
+        }
+
+        // Trouver le filon le plus proche
+        Point closestMineralPosition = GetClosestMineralPosition(player, map);
+
+        // Si on est colles au filon, le miner
+        if (Point.DistanceManhatan(closestMineralPosition, player.Position) <= 1)
+        {
+            return AIHelper.CreateCollectAction(new Point(closestMineralPosition.X - player.Position.X,
+                closestMineralPosition.Y - player.Position.Y));
+        }
+
+        // Si on est pas colles, quon rentre pas, aller vers le filon
+       //MultipleActions.MoveThenCollect(player, map, closestMineralPosition);
+
+        return AIHelper.CreateMoveAction(new Point(1, 0));
+
+
+    }
+
+    public Point GetClosestMineralPosition(IPlayer player, LegacyMap map)
+    {
+        Point playerPosition = player.Position;
+        for (int edge = 1; edge < map.tileTypeMap.GetLength(0); edge++)
+        {
+            for (int i = playerPosition.X - edge; i <= playerPosition.X + edge && i >= 0 && i < map.tileTypeMap.GetLength(0); i++)
+            {
+                for (int j = playerPosition.Y - edge; j <= playerPosition.Y + edge && j >= 0 && j < map.tileTypeMap.GetLength(1); j++)
+                {
+                    if (map.tileTypeMap[i, j] == TileContent.Resource)
+                    {
+                        return new Point(i, j);
+                        
+                    }
+                }
+            }
+        }
+
+        return player.Position;
+    }
+
+}
+public class QuickAttackStrategy : Strategy
+{
+    public override string GetNextMove(IPlayer player, IEnumerable<IPlayer> visiblePlayers, LegacyMap map)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class upgradeStrategy : Strategy
+{
+    public override string GetNextMove(IPlayer player, IEnumerable<IPlayer> visiblePlayers, LegacyMap map)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class buyItemStrategy : Strategy
+{
+    public override string GetNextMove(IPlayer player, IEnumerable<IPlayer> visiblePlayers, LegacyMap map)
+    {
+        throw new NotImplementedException();
+    }
+}
+public class defendHomeStrategy : Strategy
+{
+    public override string GetNextMove(IPlayer player, IEnumerable<IPlayer> visiblePlayers, LegacyMap map)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+
+
+
+public static class StrategyManager
+{
+    public static Strategy currentStrategy { get; set; }
+
+    public static void PickStrategy()
+    {
+        currentStrategy = new MiningStrategy();
+
+
+    }
+
+
+
+
+}
+
 
 class TestClass
 {

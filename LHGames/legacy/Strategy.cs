@@ -65,7 +65,7 @@ namespace LHGames
                     }
                 }
             }
-            return exploreAction(map,player);
+            return returnHomeAction(map,player);
         }
         private HighAction exploreAction(LegacyMap map, IPlayer gameInfo)
         {

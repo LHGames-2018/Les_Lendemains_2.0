@@ -55,7 +55,8 @@ namespace LHGames.Bot
                     currentAction = null;
                 }
             }
-            return action = currentAction.NextAction(worldMap, PlayerInfo);
+          
+            return action;
 
         }
 

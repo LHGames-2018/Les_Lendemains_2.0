@@ -31,7 +31,14 @@ namespace LHGames
         }
         public void UpdateMap(IEnumerable<Tile> visibleTiles)
         {
-            foreach(Tile t in visibleTiles)
+
+            var temp = StorageHelper.Read<TileContent[,]>("mymap");
+            if(temp != null)
+            {
+                tileTypeMap = temp;
+            }
+
+            foreach (Tile t in visibleTiles)
             {
                 int x = t.Position.X;
                 int y = t.Position.Y;
@@ -49,6 +56,8 @@ namespace LHGames
                 }
                 tileTypeMap[x, y] = t.TileType;
             }
+
+            StorageHelper.Write("mymap", tileTypeMap);
         }
     }
 }

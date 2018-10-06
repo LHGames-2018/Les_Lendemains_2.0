@@ -324,11 +324,11 @@ public class MiningStrategy : Strategy
         {
             for (int i = centerOfSearch.X - edge; i < max_x && i < centerOfSearch.X + edge; i++)
             {
-                if (i > 0)
+                if (i >= 0)
                 {
                     for (int j = centerOfSearch.Y - edge; j < max_y && j < centerOfSearch.Y + edge; j++)
                     {
-                        if (j > 0)
+                        if (j >= 0)
                         {
                             if (map.tileTypeMap[i, j] == TileContent.Resource)
                             {

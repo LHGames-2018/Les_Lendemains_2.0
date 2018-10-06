@@ -94,6 +94,11 @@ namespace LHGames.Bot
                 Console.WriteLine("Stuck at y 0, going up");
                 return AIHelper.CreateMoveAction(new Point(0, -1));
             }
+            if (PlayerInfo.Position.Y > 194)
+            {
+                Console.WriteLine("Stuck at high y, going up");
+                return AIHelper.CreateMoveAction(new Point(0, -1));
+            }
 
 
             //update map of the world
@@ -238,7 +243,7 @@ public class MiningStrategy : Strategy
         // Trouver le filon le plus proche
         Point closestMineralPosition = GetClosestMineralPosition(player, map);
 
-        if(closestMineralPosition.Y < 12)
+        if(closestMineralPosition.Y < 12 || closestMineralPosition.Y > 197)
         {
             Move moveTowardsHome = new Move(player, map, player.HouseLocation);
             return moveTowardsHome.NextAction(map, player);

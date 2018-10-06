@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using LHGames;
 using LHGames.Actions;
 using LHGames.Helper;
+using Microsoft.AspNetCore.Razor.Language;
 
 namespace LHGames.Bot
 {
@@ -50,7 +52,7 @@ namespace LHGames.Bot
             //update map of the world
             worldMap.UpdateMap(map.GetVisibleTiles());
             //worldMap.UpdateOtherPLayerMap(gameInfo.OtherPlayers);
-            StrategyManager.PickStrategy();
+            StrategyManager.PickStrategy(PlayerInfo,visiblePlayers,worldMap);
             return StrategyManager.currentStrategy.GetNextMove(PlayerInfo, visiblePlayers, worldMap);
             /*string action = null;
 
@@ -212,11 +214,17 @@ public class MiningStrategy : Strategy
 }
 public class QuickAttackStrategy : Strategy
 {
+    public IPlayer ennemy { get; set; }
+
     public override string GetNextMove(IPlayer player, IEnumerable<IPlayer> visiblePlayers, LegacyMap map)
     {
-        throw new NotImplementedException();
+
+        Point direction = new Point(ennemy.Position.X - player.Position.X, ennemy.Position.Y - player.Position.Y);
+
+        return AIHelper.CreateMeleeAttackAction(direction);
     }
 }
+
 
 public class upgradeStrategy : Strategy
 {
@@ -248,17 +256,41 @@ public static class StrategyManager
 {
     public static Strategy currentStrategy { get; set; }
 
-    public static void PickStrategy()
+    public static void PickStrategy(IPlayer player, IEnumerable<IPlayer> visiblePlayers, LegacyMap map)
     {
-        currentStrategy = new MiningStrategy();
+    
 
+        if(!IsFighting(player, visiblePlayers))
+        {
+            currentStrategy = new MiningStrategy();
 
+        }
     }
 
 
+    public static bool IsFighting(IPlayer player, IEnumerable<IPlayer> visiblePlayers)
+    {
+        bool isFighting = false;
+        if (visiblePlayers.Count() > 0)
+        {
+            int acceptableDistance = 1;
+            foreach (var visiblePlayer in visiblePlayers)
+            {
+                if (Point.DistanceManhatan(visiblePlayer.Position, player.Position) <= acceptableDistance)
+                {
+                   
+                    currentStrategy = new QuickAttackStrategy();
+                    (currentStrategy as QuickAttackStrategy).ennemy = visiblePlayer;
+                    isFighting = true;
+                }
+            }
+        }
 
+        return isFighting;
+    }
 
 }
+
 
 
 class TestClass

@@ -6,6 +6,11 @@ namespace LHGames.Bot
 {
     internal class Bot
     {
+        //legacy variable
+        static Strategy strategy = new Strategy();
+        static HighAction currentAction = null;
+        public LegacyMap worldMap = new LegacyMap();
+        // already there variable
         internal IPlayer PlayerInfo { get; set; }
         private int _currentDirection = 1;
 
@@ -28,6 +33,28 @@ namespace LHGames.Bot
         /// <returns>The action you wish to execute.</returns>
         internal string ExecuteTurn(Map map, IEnumerable<IPlayer> visiblePlayers)
         {
+            //update map of the world
+            worldMap.UpdateMap(map.GetVisibleTiles());
+            //worldMap.UpdateOtherPLayerMap(gameInfo.OtherPlayers);
+
+            string action = null;
+            while (action == null)
+            {
+                if (currentAction == null)
+                {
+                    currentAction = strategy.NextAction(worldMap, PlayerInfo);
+                    if (currentAction == null)
+                    {
+                        break;
+                    }
+                    //log(currentAction.ToString());
+                }
+                action = currentAction.NextAction(worldMap, PlayerInfo);
+                if (action == null)
+                {
+                    currentAction = null;
+                }
+            }
             // TODO: Implement your AI here.
             if (map.GetTileAt(PlayerInfo.Position.X + _currentDirection, PlayerInfo.Position.Y) == TileContent.Wall)
             {

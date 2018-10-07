@@ -141,18 +141,6 @@ namespace LHGames.Bot
             //fin des upgrades
 
 
-            if (PlayerInfo.Position.Y == 0)
-            {
-                Console.WriteLine("Stuck at y 0, going up");
-                return AIHelper.CreateMoveAction(new Point(0, -1));
-            }
-            if (PlayerInfo.Position.Y > 194)
-            {
-                Console.WriteLine("Stuck at high y, going up");
-                return AIHelper.CreateMoveAction(new Point(0, -1));
-            }
-
-
             //update map of the world
             worldMap.UpdateMap(map.GetVisibleTiles());
             //worldMap.UpdateOtherPLayerMap(gameInfo.OtherPlayers);
